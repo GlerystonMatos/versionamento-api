@@ -1,0 +1,1597 @@
+{
+	"info": {
+		"_postman_id": "fe7d3137-d011-48ac-9db0-ac11e7f7de52",
+		"name": "versionamento",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "3166767"
+	},
+	"item": [
+		{
+			"name": "Default",
+			"item": [
+				{
+					"name": "HealthCheck",
+					"item": [
+						{
+							"name": "/HealthCheck/Check",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"tests[\"status é igual a 200\"] = responseCode.code === 200;\r",
+											"\r",
+											"try {\r",
+											"    responseJSON = JSON.parse(responseBody);\r",
+											"    tests['resposta é um JSON válido'] = true;\r",
+											"}\r",
+											"catch (e) {\r",
+											"    responseJSON = {};\r",
+											"    tests['resposta não é um JSON válido'] = false;\r",
+											"}\r",
+											"\r",
+											"tests[\"mensagem\"] = responseJSON.message === \"Aplicacao Funcionando! v1.0 and 2.0\";"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/HealthCheck/Check",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"HealthCheck",
+										"Check"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Authorization",
+					"item": [
+						{
+							"name": "Authenticate",
+							"item": [
+								{
+									"name": "/Login/Authenticate",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"tests[\"status é igual a 200\"] = responseCode.code === 200;",
+													"",
+													"try {",
+													"    responseJSON = JSON.parse(responseBody);",
+													"    tests['resposta é um JSON válido'] = true;",
+													"}",
+													"catch (e) {",
+													"    responseJSON = {};",
+													"    tests['resposta não é um JSON válido'] = false;",
+													"}",
+													"",
+													"pm.environment.set(\"token\", responseJSON.token);"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"senha\": \"1234\",\r\n    \"login\": \"Teste01\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{url}}/Login/Authenticate",
+											"host": [
+												"{{url}}"
+											],
+											"path": [
+												"Login",
+												"Authenticate"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Authenticated",
+							"item": [
+								{
+									"name": "/Login/Authenticated",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"tests[\"status é igual a 200\"] = responseCode.code === 200;\r",
+													"\r",
+													"try {\r",
+													"    responseJSON = JSON.parse(responseBody);\r",
+													"    tests['resposta é um JSON válido'] = true;\r",
+													"}\r",
+													"catch (e) {\r",
+													"    responseJSON = {};\r",
+													"    tests['resposta não é um JSON válido'] = false;\r",
+													"}\r",
+													"\r",
+													"tests[\"mensagem\"] = responseJSON.mensagem.match(\"Usuário autenticado\");"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{url}}/Login/Authenticated",
+											"host": [
+												"{{url}}"
+											],
+											"path": [
+												"Login",
+												"Authenticated"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Usuario",
+					"item": [
+						{
+							"name": "/OData/Usuario all",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"tests[\"status é igual a 200\"] = responseCode.code === 200;",
+											"",
+											"try {",
+											"    responseJSON = JSON.parse(responseBody);",
+											"    tests['resposta é um JSON válido'] = true;",
+											"}",
+											"catch (e) {",
+											"    responseJSON = {};",
+											"    tests['resposta não é um JSON válido'] = false;",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/OData/Usuario",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"OData",
+										"Usuario"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Animal",
+					"item": [
+						{
+							"name": "/OData/Animal all",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"tests[\"status é igual a 200\"] = responseCode.code === 200;",
+											"",
+											"try {",
+											"    responseJSON = JSON.parse(responseBody);",
+											"    tests['resposta é um JSON válido'] = true;",
+											"}",
+											"catch (e) {",
+											"    responseJSON = {};",
+											"    tests['resposta não é um JSON válido'] = false;",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/OData/Animal",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"OData",
+										"Animal"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Manual",
+			"item": [
+				{
+					"name": "HealthCheck",
+					"item": [
+						{
+							"name": "/HealthCheck/Check 1.0",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"tests[\"status é igual a 200\"] = responseCode.code === 200;\r",
+											"\r",
+											"try {\r",
+											"    responseJSON = JSON.parse(responseBody);\r",
+											"    tests['resposta é um JSON válido'] = true;\r",
+											"}\r",
+											"catch (e) {\r",
+											"    responseJSON = {};\r",
+											"    tests['resposta não é um JSON válido'] = false;\r",
+											"}\r",
+											"\r",
+											"tests[\"mensagem\"] = responseJSON.message === \"Aplicacao Funcionando! v1.0 and 2.0\";"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/HealthCheck/Check?api-version=1.0",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"HealthCheck",
+										"Check"
+									],
+									"query": [
+										{
+											"key": "api-version",
+											"value": "1.0"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/HealthCheck/Check 1.1",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"tests[\"status é igual a 200\"] = responseCode.code === 200;\r",
+											"\r",
+											"try {\r",
+											"    responseJSON = JSON.parse(responseBody);\r",
+											"    tests['resposta é um JSON válido'] = true;\r",
+											"}\r",
+											"catch (e) {\r",
+											"    responseJSON = {};\r",
+											"    tests['resposta não é um JSON válido'] = false;\r",
+											"}\r",
+											"\r",
+											"tests[\"mensagem\"] = responseJSON.message === \"Aplicacao Funcionando! v1.1\";"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/HealthCheck/Check?api-version=1.1",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"HealthCheck",
+										"Check"
+									],
+									"query": [
+										{
+											"key": "api-version",
+											"value": "1.1"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/HealthCheck/Check 2.0",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"tests[\"status é igual a 200\"] = responseCode.code === 200;\r",
+											"\r",
+											"try {\r",
+											"    responseJSON = JSON.parse(responseBody);\r",
+											"    tests['resposta é um JSON válido'] = true;\r",
+											"}\r",
+											"catch (e) {\r",
+											"    responseJSON = {};\r",
+											"    tests['resposta não é um JSON válido'] = false;\r",
+											"}\r",
+											"\r",
+											"tests[\"mensagem\"] = responseJSON.message === \"Aplicacao Funcionando! v1.0 and 2.0\";"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/HealthCheck/Check?api-version=2.0",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"HealthCheck",
+										"Check"
+									],
+									"query": [
+										{
+											"key": "api-version",
+											"value": "2.0"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Authorization",
+					"item": [
+						{
+							"name": "Authenticate",
+							"item": [
+								{
+									"name": "/Login/Authenticate",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"tests[\"status é igual a 200\"] = responseCode.code === 200;",
+													"",
+													"try {",
+													"    responseJSON = JSON.parse(responseBody);",
+													"    tests['resposta é um JSON válido'] = true;",
+													"}",
+													"catch (e) {",
+													"    responseJSON = {};",
+													"    tests['resposta não é um JSON válido'] = false;",
+													"}",
+													"",
+													"pm.environment.set(\"token\", responseJSON.token);"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"senha\": \"1234\",\r\n    \"login\": \"Teste01\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{url}}/Login/Authenticate?api-version=2.0",
+											"host": [
+												"{{url}}"
+											],
+											"path": [
+												"Login",
+												"Authenticate"
+											],
+											"query": [
+												{
+													"key": "api-version",
+													"value": "2.0"
+												}
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Authenticated",
+							"item": [
+								{
+									"name": "/Login/Authenticated",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"tests[\"status é igual a 200\"] = responseCode.code === 200;\r",
+													"\r",
+													"try {\r",
+													"    responseJSON = JSON.parse(responseBody);\r",
+													"    tests['resposta é um JSON válido'] = true;\r",
+													"}\r",
+													"catch (e) {\r",
+													"    responseJSON = {};\r",
+													"    tests['resposta não é um JSON válido'] = false;\r",
+													"}\r",
+													"\r",
+													"tests[\"mensagem\"] = responseJSON.mensagem.match(\"Usuário autenticado\");"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{url}}/Login/Authenticated?api-version=2.0",
+											"host": [
+												"{{url}}"
+											],
+											"path": [
+												"Login",
+												"Authenticated"
+											],
+											"query": [
+												{
+													"key": "api-version",
+													"value": "2.0"
+												}
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Usuario",
+					"item": [
+						{
+							"name": "/OData/Usuario all",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"tests[\"status é igual a 200\"] = responseCode.code === 200;",
+											"",
+											"try {",
+											"    responseJSON = JSON.parse(responseBody);",
+											"    tests['resposta é um JSON válido'] = true;",
+											"}",
+											"catch (e) {",
+											"    responseJSON = {};",
+											"    tests['resposta não é um JSON válido'] = false;",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/OData/Usuario?api-version=2.0",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"OData",
+										"Usuario"
+									],
+									"query": [
+										{
+											"key": "api-version",
+											"value": "2.0"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Animal",
+					"item": [
+						{
+							"name": "/OData/Animal all",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"tests[\"status é igual a 200\"] = responseCode.code === 200;",
+											"",
+											"try {",
+											"    responseJSON = JSON.parse(responseBody);",
+											"    tests['resposta é um JSON válido'] = true;",
+											"}",
+											"catch (e) {",
+											"    responseJSON = {};",
+											"    tests['resposta não é um JSON válido'] = false;",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/OData/Animal?api-version=2.0",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"OData",
+										"Animal"
+									],
+									"query": [
+										{
+											"key": "api-version",
+											"value": "2.0"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "v2.0",
+			"item": [
+				{
+					"name": "HealthCheck",
+					"item": [
+						{
+							"name": "/HealthCheck/Check",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"tests[\"status é igual a 200\"] = responseCode.code === 200;\r",
+											"\r",
+											"try {\r",
+											"    responseJSON = JSON.parse(responseBody);\r",
+											"    tests['resposta é um JSON válido'] = true;\r",
+											"}\r",
+											"catch (e) {\r",
+											"    responseJSON = {};\r",
+											"    tests['resposta não é um JSON válido'] = false;\r",
+											"}\r",
+											"\r",
+											"tests[\"mensagem\"] = responseJSON.message === \"Aplicacao Funcionando! v1.0 and 2.0\";"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/v2/HealthCheck/Check",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"v2",
+										"HealthCheck",
+										"Check"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Authorization",
+					"item": [
+						{
+							"name": "Authenticate",
+							"item": [
+								{
+									"name": "/Login/Authenticate",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"tests[\"status é igual a 200\"] = responseCode.code === 200;",
+													"",
+													"try {",
+													"    responseJSON = JSON.parse(responseBody);",
+													"    tests['resposta é um JSON válido'] = true;",
+													"}",
+													"catch (e) {",
+													"    responseJSON = {};",
+													"    tests['resposta não é um JSON válido'] = false;",
+													"}",
+													"",
+													"pm.environment.set(\"token\", responseJSON.token);"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"senha\": \"1234\",\r\n    \"login\": \"Teste01\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{url}}/v2/Login/Authenticate",
+											"host": [
+												"{{url}}"
+											],
+											"path": [
+												"v2",
+												"Login",
+												"Authenticate"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Authenticated",
+							"item": [
+								{
+									"name": "/Login/Authenticated",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"tests[\"status é igual a 200\"] = responseCode.code === 200;\r",
+													"\r",
+													"try {\r",
+													"    responseJSON = JSON.parse(responseBody);\r",
+													"    tests['resposta é um JSON válido'] = true;\r",
+													"}\r",
+													"catch (e) {\r",
+													"    responseJSON = {};\r",
+													"    tests['resposta não é um JSON válido'] = false;\r",
+													"}\r",
+													"\r",
+													"tests[\"mensagem\"] = responseJSON.mensagem.match(\"Usuário autenticado\");"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{url}}/v2/Login/Authenticated",
+											"host": [
+												"{{url}}"
+											],
+											"path": [
+												"v2",
+												"Login",
+												"Authenticated"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Usuario",
+					"item": [
+						{
+							"name": "/OData/Usuario all",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"tests[\"status é igual a 200\"] = responseCode.code === 200;",
+											"",
+											"try {",
+											"    responseJSON = JSON.parse(responseBody);",
+											"    tests['resposta é um JSON válido'] = true;",
+											"}",
+											"catch (e) {",
+											"    responseJSON = {};",
+											"    tests['resposta não é um JSON válido'] = false;",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/OData/v2/Usuario",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"OData",
+										"v2",
+										"Usuario"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Animal",
+					"item": [
+						{
+							"name": "/OData/Animal all",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"tests[\"status é igual a 200\"] = responseCode.code === 200;",
+											"",
+											"try {",
+											"    responseJSON = JSON.parse(responseBody);",
+											"    tests['resposta é um JSON válido'] = true;",
+											"}",
+											"catch (e) {",
+											"    responseJSON = {};",
+											"    tests['resposta não é um JSON válido'] = false;",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/OData/v2/Animal",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"OData",
+										"v2",
+										"Animal"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "v1.1",
+			"item": [
+				{
+					"name": "HealthCheck",
+					"item": [
+						{
+							"name": "/HealthCheck/Check",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"tests[\"status é igual a 200\"] = responseCode.code === 200;\r",
+											"\r",
+											"try {\r",
+											"    responseJSON = JSON.parse(responseBody);\r",
+											"    tests['resposta é um JSON válido'] = true;\r",
+											"}\r",
+											"catch (e) {\r",
+											"    responseJSON = {};\r",
+											"    tests['resposta não é um JSON válido'] = false;\r",
+											"}\r",
+											"\r",
+											"tests[\"mensagem\"] = responseJSON.message === \"Aplicacao Funcionando! v1.1\";"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/v1.1/HealthCheck/Check",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"v1.1",
+										"HealthCheck",
+										"Check"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Authorization",
+					"item": [
+						{
+							"name": "Authenticate",
+							"item": [
+								{
+									"name": "/Login/Authenticate",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"tests[\"status é igual a 200\"] = responseCode.code === 200;",
+													"",
+													"try {",
+													"    responseJSON = JSON.parse(responseBody);",
+													"    tests['resposta é um JSON válido'] = true;",
+													"}",
+													"catch (e) {",
+													"    responseJSON = {};",
+													"    tests['resposta não é um JSON válido'] = false;",
+													"}",
+													"",
+													"pm.environment.set(\"token\", responseJSON.token);"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"senha\": \"1234\",\r\n    \"login\": \"Teste01\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{url}}/v1.1/Login/Authenticate",
+											"host": [
+												"{{url}}"
+											],
+											"path": [
+												"v1.1",
+												"Login",
+												"Authenticate"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Authenticated",
+							"item": [
+								{
+									"name": "/Login/Authenticated",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"tests[\"status é igual a 200\"] = responseCode.code === 200;\r",
+													"\r",
+													"try {\r",
+													"    responseJSON = JSON.parse(responseBody);\r",
+													"    tests['resposta é um JSON válido'] = true;\r",
+													"}\r",
+													"catch (e) {\r",
+													"    responseJSON = {};\r",
+													"    tests['resposta não é um JSON válido'] = false;\r",
+													"}\r",
+													"\r",
+													"tests[\"mensagem\"] = responseJSON.mensagem.match(\"Usuário autenticado\");"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{url}}/v1.1/Login/Authenticated",
+											"host": [
+												"{{url}}"
+											],
+											"path": [
+												"v1.1",
+												"Login",
+												"Authenticated"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Usuario",
+					"item": [
+						{
+							"name": "/OData/Usuario all",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"tests[\"status é igual a 200\"] = responseCode.code === 200;",
+											"",
+											"try {",
+											"    responseJSON = JSON.parse(responseBody);",
+											"    tests['resposta é um JSON válido'] = true;",
+											"}",
+											"catch (e) {",
+											"    responseJSON = {};",
+											"    tests['resposta não é um JSON válido'] = false;",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/OData/v1.1/Usuario",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"OData",
+										"v1.1",
+										"Usuario"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Animal",
+					"item": [
+						{
+							"name": "/OData/Animal all",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"tests[\"status é igual a 200\"] = responseCode.code === 200;",
+											"",
+											"try {",
+											"    responseJSON = JSON.parse(responseBody);",
+											"    tests['resposta é um JSON válido'] = true;",
+											"}",
+											"catch (e) {",
+											"    responseJSON = {};",
+											"    tests['resposta não é um JSON válido'] = false;",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/OData/v1.1/Animal",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"OData",
+										"v1.1",
+										"Animal"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "v1.0",
+			"item": [
+				{
+					"name": "HealthCheck",
+					"item": [
+						{
+							"name": "/HealthCheck/Check",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"tests[\"status é igual a 200\"] = responseCode.code === 200;\r",
+											"\r",
+											"try {\r",
+											"    responseJSON = JSON.parse(responseBody);\r",
+											"    tests['resposta é um JSON válido'] = true;\r",
+											"}\r",
+											"catch (e) {\r",
+											"    responseJSON = {};\r",
+											"    tests['resposta não é um JSON válido'] = false;\r",
+											"}\r",
+											"\r",
+											"tests[\"mensagem\"] = responseJSON.message === \"Aplicacao Funcionando! v1.0 and 2.0\";"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/v1/HealthCheck/Check",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"v1",
+										"HealthCheck",
+										"Check"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				},
+				{
+					"name": "Authorization",
+					"item": [
+						{
+							"name": "Authenticate",
+							"item": [
+								{
+									"name": "/Login/Authenticate",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"tests[\"status é igual a 200\"] = responseCode.code === 200;",
+													"",
+													"try {",
+													"    responseJSON = JSON.parse(responseBody);",
+													"    tests['resposta é um JSON válido'] = true;",
+													"}",
+													"catch (e) {",
+													"    responseJSON = {};",
+													"    tests['resposta não é um JSON válido'] = false;",
+													"}",
+													"",
+													"pm.environment.set(\"token\", responseJSON.token);"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"senha\": \"1234\",\r\n    \"login\": \"Teste01\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{url}}/v1/Login/Authenticate",
+											"host": [
+												"{{url}}"
+											],
+											"path": [
+												"v1",
+												"Login",
+												"Authenticate"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Authenticated",
+							"item": [
+								{
+									"name": "/Login/Authenticated",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"tests[\"status é igual a 200\"] = responseCode.code === 200;\r",
+													"\r",
+													"try {\r",
+													"    responseJSON = JSON.parse(responseBody);\r",
+													"    tests['resposta é um JSON válido'] = true;\r",
+													"}\r",
+													"catch (e) {\r",
+													"    responseJSON = {};\r",
+													"    tests['resposta não é um JSON válido'] = false;\r",
+													"}\r",
+													"\r",
+													"tests[\"mensagem\"] = responseJSON.mensagem.match(\"Usuário autenticado\");"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{token}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{url}}/v1/Login/Authenticated",
+											"host": [
+												"{{url}}"
+											],
+											"path": [
+												"v1",
+												"Login",
+												"Authenticated"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Usuario",
+					"item": [
+						{
+							"name": "/OData/Usuario all",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"tests[\"status é igual a 200\"] = responseCode.code === 200;",
+											"",
+											"try {",
+											"    responseJSON = JSON.parse(responseBody);",
+											"    tests['resposta é um JSON válido'] = true;",
+											"}",
+											"catch (e) {",
+											"    responseJSON = {};",
+											"    tests['resposta não é um JSON válido'] = false;",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/OData/v1/Usuario",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"OData",
+										"v1",
+										"Usuario"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Animal",
+					"item": [
+						{
+							"name": "/OData/Animal all",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"tests[\"status é igual a 200\"] = responseCode.code === 200;",
+											"",
+											"try {",
+											"    responseJSON = JSON.parse(responseBody);",
+											"    tests['resposta é um JSON válido'] = true;",
+											"}",
+											"catch (e) {",
+											"    responseJSON = {};",
+											"    tests['resposta não é um JSON válido'] = false;",
+											"}"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/OData/v1/Animal",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"OData",
+										"v1",
+										"Animal"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	]
+}

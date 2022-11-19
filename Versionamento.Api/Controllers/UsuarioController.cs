@@ -11,6 +11,7 @@ namespace Versionamento.Api.Controllers
     [Authorize]
     [ApiController]
     [Route("[controller]")]
+    [Route("v{version:apiVersion}/[controller]")]
     public class UsuarioController : ControllerBase
     {
         private readonly IUsuarioService _usuarioService;
@@ -25,6 +26,9 @@ namespace Versionamento.Api.Controllers
         /// <response code="400">Não foi possível realizar a consulta.</response>
         [HttpGet]
         [EnableQuery()]
+        [ApiVersion("2.0")]
+        [ApiVersion("1.1", Deprecated = true)]
+        [ApiVersion("1.0", Deprecated = true)]
         [ProducesResponseType(typeof(IQueryable<UsuarioDto>), 200)]
         [ProducesResponseType(typeof(ExceptionMessage), 400)]
         public IActionResult Get()

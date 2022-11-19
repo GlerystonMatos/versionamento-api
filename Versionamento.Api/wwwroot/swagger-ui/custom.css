@@ -5,10 +5,6 @@
     box-shadow: none;
 }
 
-.swagger-ui .topbar .download-url-wrapper .select-label {
-    display: none;
-}
-
 .swagger-ui .info {
     margin-bottom: 0px;
 }

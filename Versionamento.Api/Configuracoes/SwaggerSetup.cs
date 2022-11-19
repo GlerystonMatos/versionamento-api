@@ -1,65 +1,26 @@
-﻿using Microsoft.AspNetCore.OData.Formatter;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OData.Formatter;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.OpenApi.Models;
-using System;
-using System.ComponentModel;
-using System.IO;
 using System.Linq;
 using System.Net.Http.Headers;
-using System.Reflection;
-using Versionamento.Api.Filter;
 
 namespace Versionamento.Api.Configuracoes
 {
     public static class SwaggerSetup
     {
-        public static void AddSwaggerSetup(this IServiceCollection services, string name, string version)
+        public static void AddSwaggerSetup(this IServiceCollection services)
         {
-            services.AddSwaggerGen(s =>
+            services.AddApiVersioning(options =>
             {
-                s.SwaggerDoc("v" + version, new OpenApiInfo
-                {
-                    Title = name,
-                    Version = "v" + version,
-                    Description = "Documentação da api do projeto Versionamento.<br/>" +
-                        "Para usar o OData nos endpoints onde o mesmo está disponível é necessário utilizar o prefixo “OData”.<br/>" +
-                        "A autenticação da api deve ser feita enviando o usuário e a senha para o endpoint /Login/Authenticate.<br/>" +
-                        "Em seguida o token deve ser enviado no Header da requisição: Authorization – Bearer Token."
-                });
+                options.ReportApiVersions = true;
+                options.DefaultApiVersion = new ApiVersion(2, 0);
+                options.AssumeDefaultVersionWhenUnspecified = true;
+            });
 
-                s.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-                {
-                    In = ParameterLocation.Header,
-                    Description = "Por favor insira JWT com Bearer no campo",
-                    Name = "Authorization",
-                    Type = SecuritySchemeType.ApiKey
-                });
-
-                s.AddSecurityRequirement(new OpenApiSecurityRequirement
-                {
-                    {
-                        new OpenApiSecurityScheme
-                        {
-                            Reference = new OpenApiReference
-                            {
-                                Type = ReferenceType.SecurityScheme,
-                                Id = "Bearer"
-                            }
-                        },
-                        new string[] { }
-                    }
-                });
-
-                string xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                string xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-                s.IncludeXmlComments(xmlPath);
-
-                s.SchemaFilter<SwaggerSchemaFilter>();
-                s.DocumentFilter<SwaggerDocumentFilter>();
-
-                s.CustomSchemaIds(x => (x.GetCustomAttributes<DisplayNameAttribute>().Count() > 0)
-                    ? x.GetCustomAttributes<DisplayNameAttribute>().SingleOrDefault().DisplayName
-                    : x.Name);
+            services.AddVersionedApiExplorer(options =>
+            {
+                options.GroupNameFormat = "'v'FFF";
+                options.SubstituteApiVersionInUrl = true;
             });
 
             services.AddMvcCore(options =>

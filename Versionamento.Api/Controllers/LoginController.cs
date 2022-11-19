@@ -9,7 +9,11 @@ using Versionamento.Domain.Interfaces.Services;
 namespace Versionamento.Api.Controllers
 {
     [ApiController]
+    [ApiVersion("2.0")]
+    [ApiVersion("1.1")]
+    [ApiVersion("1.0")]
     [Route("[controller]")]
+    [Route("v{version:apiVersion}/[controller]")]
     public class LoginController : ControllerBase
     {
         private readonly IUsuarioService _usuarioService;

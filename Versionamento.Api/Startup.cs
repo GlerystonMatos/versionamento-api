@@ -3,11 +3,16 @@ using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption;
 using Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.ConfigurationModel;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.OData;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
+using Swashbuckle.AspNetCore.SwaggerGen;
 using Swashbuckle.AspNetCore.SwaggerUI;
+using System.Linq;
 using Versionamento.Api.Configuracoes;
 using Versionamento.Api.Middleware;
 using Versionamento.CrossCutting;
@@ -18,29 +23,21 @@ namespace Versionamento.Api
     public class Startup
     {
         public Startup(IConfiguration configuration)
-        {
-            Name = configuration.GetValue<string>("Application:Name");
-            Version = configuration.GetValue<string>("Application:Version");
-            DefaultConnection = configuration.GetValue<string>("ConnectionStrings:DefaultConnection");
-        }
+            => _defaultConnection = configuration.GetValue<string>("ConnectionStrings:DefaultConnection");
 
-        public string Name { get; }
-
-        public string Version { get; }
-
-        public string DefaultConnection { get; }
+        public string _defaultConnection { get; }
 
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddCors();
             services.AddControllers()
                 .AddOData(opt => opt.Select().Expand().Filter().OrderBy().SetMaxTop(100).Count()
-                    .AddRouteComponents("OData", EdmModelConfig.GetEdmModel()));
+                .AddRouteComponents("OData", EdmModelConfig.GetEdmModel())
+                .AddRouteComponents("OData/v{version}", EdmModelConfig.GetEdmModel()));
 
             services.AddJwtSetup();
-            services.AddSwaggerSetup(Name, Version);
             services.AddAutoMapper(typeof(AutoMapping));
-            services.RegisterDependencies(DefaultConnection);
+            services.RegisterDependencies(_defaultConnection);
 
             services.AddDataProtection()
                 .UseCryptographicAlgorithms(
@@ -49,9 +46,15 @@ namespace Versionamento.Api
                         EncryptionAlgorithm = EncryptionAlgorithm.AES_256_CBC,
                         ValidationAlgorithm = ValidationAlgorithm.HMACSHA256
                     });
+
+            services.AddEndpointsApiExplorer()
+                .AddSwaggerGen()
+                .AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerGenOptions>();
+
+            services.AddSwaggerSetup();
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IApiVersionDescriptionProvider apiVersionDescriptionProvider)
         {
             if (env.IsDevelopment())
             {
@@ -68,7 +71,11 @@ namespace Versionamento.Api
                 ui.DocExpansion(DocExpansion.None);
                 ui.DocumentTitle = "Versionamento";
                 ui.InjectStylesheet("/swagger-ui/custom.css");
-                ui.SwaggerEndpoint("/swagger/v" + Version + "/swagger.json", Name + " V" + Version);
+
+                foreach (ApiVersionDescription description in apiVersionDescriptionProvider.ApiVersionDescriptions.OrderByDescending(v => v.GroupName))
+                {
+                    ui.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json", description.GroupName.ToUpper());
+                }
             });
 
             app.UseHttpsRedirection();
